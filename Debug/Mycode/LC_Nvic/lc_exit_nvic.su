@@ -1,0 +1,1 @@
+lc_exit_nvic.c:11:6:HAL_GPIO_EXTI_Callback	16	static
