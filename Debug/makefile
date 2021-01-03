@@ -1,5 +1,5 @@
 ################################################################################
-# Automatically-generated file. Do not edit!
+# 自动生成的文件。不要编辑！
 ################################################################################
 
 -include ../makefile.init
@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include lc_rm/source/subdir.mk
 -include Mycode/LC_Nvic/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
@@ -43,31 +44,31 @@ OBJCOPY_BIN += \
 WINDWILL.bin \
 
 
-# All Target
+# 所有目标
 all: WINDWILL.elf secondary-outputs
 
-# Tool invocations
+# 工具调用
 WINDWILL.elf: $(OBJS) $(USER_OBJS) E:\STM32\2020\WINDWILL\STM32F427IIHX_FLASH.ld
 	arm-none-eabi-gcc -o "WINDWILL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\STM32\2020\WINDWILL\STM32F427IIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WINDWILL.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-	@echo 'Finished building target: $@'
+	@echo '已结束构建目标： $@'
 	@echo ' '
 
 default.size.stdout: $(EXECUTABLES)
 	arm-none-eabi-size  $(EXECUTABLES)
-	@echo 'Finished building: $@'
+	@echo '已结束构建： $@'
 	@echo ' '
 
 WINDWILL.list: $(EXECUTABLES)
 	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "WINDWILL.list"
-	@echo 'Finished building: $@'
+	@echo '已结束构建： $@'
 	@echo ' '
 
 WINDWILL.bin: $(EXECUTABLES)
 	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "WINDWILL.bin"
-	@echo 'Finished building: $@'
+	@echo '已结束构建： $@'
 	@echo ' '
 
-# Other Targets
+# 其他目标
 clean:
 	-$(RM) *
 	-@echo ' '

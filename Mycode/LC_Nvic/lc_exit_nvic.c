@@ -30,6 +30,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 //			{
 //				ws2812_example1(&htim1, TIM_CHANNEL_2);
 //			}
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)RGB_buffur2, (RESET_PULSE + WS2812_DATA_LEN1));
 			ws2812_example1(&htim1, TIM_CHANNEL_2);
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}

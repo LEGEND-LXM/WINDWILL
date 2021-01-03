@@ -1,0 +1,5 @@
+bsp_usart.c:19:1:__io_putchar	16	static
+bsp_usart.c:31:6:Callback_RC_Handle	16	static
+bsp_usart.c:75:19:UART_Receive_DMA_NoIT	32	static
+bsp_usart.c:129:19:HAL_UART_Receive_IT_IDLE	24	static
+bsp_usart.c:142:6:HAL_UART_IDLE_IRQHandler	24	static

@@ -19,14 +19,21 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "can.h"
 #include "dma.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lc_ws2812.h"
 #include "lc_exit_nvic.h"
+
+#include "pid.h"
+#include "bsp_can.h"
+#include "bsp_usart.h"
+#include "robomaster_vcan.h"
 
 /* USER CODE END Includes */
 
@@ -43,6 +50,8 @@
 /* USER CODE BEGIN PM */
   uint8_t windwill_num = 1;
   uint8_t windwill_state = 0;
+
+  pid_struct_t windwill_motor_PID ;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -93,6 +102,9 @@ int main(void)
   MX_DMA_Init();
   MX_TIM1_Init();
   MX_TIM8_Init();
+  MX_USART1_UART_Init();
+  MX_CAN1_Init();
+  MX_UART8_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
@@ -101,20 +113,37 @@ int main(void)
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
 
-  array_set();
+  array_set_red();
+  array_set_rst();
+
+  can_user_init(&hcan1);             // CAN用户初始化
+
+  pid_init(&windwill_motor_PID, DELTA_PID      //1号电机
+								,10            		 //Kp
+								,0            		 //Ki
+								,0            		 //Kd
+								,0 ,1300 ,0); //初始化底盘电机PID结构体
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)RGB_buffur2, (48));
-  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
-  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
-  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
-  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
+//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)RGB_buffur2, (48));
+//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
+//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
+//  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
+//  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
 
   while (1)
   {
+	  motor_info[0].set_voltage = pid_calc(&windwill_motor_PID
+										, 500
+										,motor_info[0].set_voltage );
+	  set_motor_voltage(1 ,motor_info[0].set_voltage
+								,0
+								,0
+								,0
+						 );
 	  if( windwill_state == 1 )
 	  {
 		  windwill_state = 0;
@@ -149,7 +178,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 12;
-  RCC_OscInitStruct.PLL.PLLN = 288;
+  RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
@@ -165,7 +194,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
     Error_Handler();
   }
