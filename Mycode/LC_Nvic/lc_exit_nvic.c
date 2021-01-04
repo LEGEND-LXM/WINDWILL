@@ -19,7 +19,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			// 1.判断是否为需要打击的扇叶
 			// 2.对应扇叶灯条亮
 			// 3.中间灯条常亮
-			ws2812_example1(&htim1, TIM_CHANNEL_1);
+//			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)RGB_Array_Send, (RESET_PULSE + WS2812_DATA_LEN2));
+//			ws2812_example1(&htim1, TIM_CHANNEL_1);
+			HAL_TIM_Base_Start_IT(&htim2);
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
 			break;

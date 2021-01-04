@@ -28,6 +28,7 @@
 "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o"
 "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o"
 "Mycode/LC_Nvic/lc_exit_nvic.o"
+"Mycode/LC_Nvic/lc_tim_nvic.o"
 "Mycode/LC_Nvic/lc_ws2812.o"
 "lc_rm/source/bsp_can.o"
 "lc_rm/source/bsp_usart.o"

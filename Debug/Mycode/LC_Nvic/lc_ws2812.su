@@ -1,6 +1,9 @@
-lc_ws2812.c:14:6:HAL_TIM_PWM_PulseFinishedCallback	16	static
-lc_ws2812.c:35:6:ws2812_set_RGB1	24	static
-lc_ws2812.c:49:6:ws2812_set_RGB2	24	static
-lc_ws2812.c:63:6:ws2812_example1	16	static
-lc_ws2812.c:72:6:array_set_red	16	static
-lc_ws2812.c:85:6:array_set_rst	16	static
+lc_ws2812.c:23:6:ws2812_set_RGB1	24	static
+lc_ws2812.c:37:6:ws2812_set_RGB2	24	static
+lc_ws2812.c:51:6:ws2812_set_RGB3	24	static
+lc_ws2812.c:65:6:Array_Data_process	24	static
+lc_ws2812.c:99:6:ws2812_example1	16	static
+lc_ws2812.c:109:6:array_set_red	16	static
+lc_ws2812.c:123:6:array_set_rst	16	static
+lc_ws2812.c:137:6:array_set_data1	16	static
+lc_ws2812.c:185:6:HAL_TIM_PWM_PulseFinishedCallback	16	static

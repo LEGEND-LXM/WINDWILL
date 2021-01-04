@@ -105,6 +105,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_CAN1_Init();
   MX_UART8_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
@@ -115,30 +116,29 @@ int main(void)
 
   array_set_red();
   array_set_rst();
+  array_set_data1();
+  Array_Data_process(24);
 
-  can_user_init(&hcan1);             // CAN用户初始化
+  can_user_init(&hcan1);             // CAN用户初始�???
 
-  pid_init(&windwill_motor_PID, DELTA_PID      //1号电机
+  pid_init(&windwill_motor_PID, DELTA_PID      //1号电�???
 								,10            		 //Kp
 								,0            		 //Ki
 								,0            		 //Kd
-								,0 ,1300 ,0); //初始化底盘电机PID结构体
+								,0 ,1300 ,0); //初始化底盘电机PID结构�???
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)RGB_buffur2, (48));
-//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
-//  HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
-//  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_2, (uint32_t *)RGB_buffur2, (48));
-//  HAL_TIM_PWM_Start_DMA(&htim8, TIM_CHANNEL_3, (uint32_t *)RGB_buffur2, (48));
+
 
   while (1)
   {
 	  motor_info[0].set_voltage = pid_calc(&windwill_motor_PID
-										, 500
-										,motor_info[0].set_voltage );
+								, 500
+								,motor_info[0].set_voltage );
 	  set_motor_voltage(1 ,motor_info[0].set_voltage
 								,0
 								,0
