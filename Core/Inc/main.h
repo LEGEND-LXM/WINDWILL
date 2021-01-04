@@ -42,8 +42,9 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern uint8_t windwill_num ;
-extern uint8_t windwill_state ;
+extern uint8_t windwill_num ; 				// 待打击装甲板编号
+extern uint8_t windwill_state ;				// 打击状�?�判定（0为待打击�?1为打击完毕）
+extern uint8_t windwill_strike_completed ;	// 打击完成标志
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -82,8 +83,20 @@ void Error_Handler(void);
 #define windwill_1_Pin GPIO_PIN_1
 #define windwill_1_GPIO_Port GPIOF
 #define windwill_1_EXTI_IRQn EXTI1_IRQn
+#define Windwill_Middle_2_Pin GPIO_PIN_0
+#define Windwill_Middle_2_GPIO_Port GPIOC
+#define Windwill_Middle_4_Pin GPIO_PIN_1
+#define Windwill_Middle_4_GPIO_Port GPIOC
+#define Windwill_Middle_None_Pin GPIO_PIN_4
+#define Windwill_Middle_None_GPIO_Port GPIOA
+#define Windwill_Middle_1_Pin GPIO_PIN_4
+#define Windwill_Middle_1_GPIO_Port GPIOC
 #define windwill_output_3_Pin GPIO_PIN_13
 #define windwill_output_3_GPIO_Port GPIOE
+#define Windwill_Middle_5_Pin GPIO_PIN_5
+#define Windwill_Middle_5_GPIO_Port GPIOA
+#define Windwill_Middle_3_Pin GPIO_PIN_5
+#define Windwill_Middle_3_GPIO_Port GPIOC
 #define LED1_Pin GPIO_PIN_11
 #define LED1_GPIO_Port GPIOE
 #define LED2_Pin GPIO_PIN_14

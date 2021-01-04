@@ -9,6 +9,7 @@
 #include "main.h"
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-
+void GPIO_State_Init(void);
+void GPIO_State_Open(void);
 
 #endif /* INCLUDE_LC_EXIT_NVIC_H_ */
