@@ -43,7 +43,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern uint8_t windwill_num ; 				// 待打击装甲板编号
-extern uint8_t windwill_state ;				// 打击状�?�判定（0为待打击�?1为打击完毕）
+extern uint8_t windwill_state ;				// 打击状�?�判定（0为待打击�??1为打击完毕）
 extern uint8_t windwill_strike_completed ;	// 打击完成标志
 /* USER CODE END EC */
 
@@ -87,6 +87,9 @@ void Error_Handler(void);
 #define Windwill_Middle_2_GPIO_Port GPIOC
 #define Windwill_Middle_4_Pin GPIO_PIN_1
 #define Windwill_Middle_4_GPIO_Port GPIOC
+#define Lineup_Switch_Pin GPIO_PIN_2
+#define Lineup_Switch_GPIO_Port GPIOB
+#define Lineup_Switch_EXTI_IRQn EXTI2_IRQn
 #define Windwill_Middle_None_Pin GPIO_PIN_4
 #define Windwill_Middle_None_GPIO_Port GPIOA
 #define Windwill_Middle_1_Pin GPIO_PIN_4

@@ -30,6 +30,7 @@
 #include "lc_ws2812.h"
 #include "lc_exit_nvic.h"
 #include "lc_pwm.h"
+#include "lc_tim_nvic.h"
 
 #include "pid.h"
 #include "bsp_can.h"
@@ -51,7 +52,7 @@
 /* USER CODE BEGIN PM */
   // 待打击装甲板编号
   uint8_t windwill_num = 1;
-  // 打击状�?�判定（0为待打击�?1为打击完毕）
+  // 打击状�?�判定（0为待打击�???1为打击完毕）
   uint8_t windwill_state = 0;
   // 打击完成标志
   uint8_t windwill_strike_completed = 0;
@@ -113,19 +114,27 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
-  LC_Pwm_Init();	// 定时器PWM通道打开
+  LC_Pwm_Init();						// 定时器PWM通道打开
 
-  LC_Ws2812_Init();	// RGB相关初始化
 
-  GPIO_State_Init();
+//  GPIO_State_Init();					// 继电器初始化
 
-  can_user_init(&hcan1);             // CAN用户初始�????
 
-  pid_init(&windwill_motor_PID, DELTA_PID      //1号电�????
+  LC_Ws2812_Init();						// RGB相关初始�??
+
+  ws2812_lamp_strip_Init();				// 灯条初始�?
+
+  LC_TimInterrupt_Init();				// 定时器中断初始化
+
+  ws2812_lamp_strip_Init();				// 灯条初始�?
+
+  can_user_init(&hcan1);             	// CAN用户初始�??????
+
+  pid_init(&windwill_motor_PID, DELTA_PID      //1号电�??????
 								,10            		 //Kp
 								,0            		 //Ki
 								,0            		 //Kd
-								,0 ,1300 ,0); //初始化底盘电机PID结构�????
+								,0 ,1300 ,0); //初始化底盘电机PID结构�??????
 
 
   /* USER CODE END 2 */
@@ -146,18 +155,21 @@ int main(void)
 
 	  if( windwill_state == 1 )	// 如果已经打击
 	  {
-		  windwill_state = 0;	// 清除打击标志�?
-//		  windwill_num++;		// 切换下一块装甲板
+		  windwill_state = 0;	// 清除打击标志�???
 		  HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 	  }
 
-	  if( windwill_strike_completed == 1 ) 	// 打击完成
+	  // 打击完成
+	  // 进行初始�?
+	  if( windwill_strike_completed == 1 )
 	  {
-		  HAL_Delay(5000);	// 等待5s后重
-		  windwill_state = 0;
+		  ws2812_Mission_Accomplished();	// 打击完成响应
+		  windwill_state = 0;				// 初始化打击状�?
+
+		  ws2812_lamp_strip_Init();			// 初始化灯�?
 		  GPIO_State_Init();
-		  windwill_strike_completed = 0;	// 清除标志�?
-		  windwill_num = 1;					// 装甲板标号归�?
+		  windwill_strike_completed = 0;	// 清除打击完成标志�?
+		  windwill_num = 1;					// 装甲板标号归0
 	  }
 
     /* USER CODE END WHILE */

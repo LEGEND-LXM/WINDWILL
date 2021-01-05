@@ -8,6 +8,7 @@
 #include "dma.h"
 
 #include "lc_ws2812.h"
+#include "lc_tim_nvic.h"
 #include "lc_exit_nvic.h"
 
 // 选择红蓝方
@@ -17,6 +18,8 @@ uint8_t Globle_State = 0;	// 0 代表红方； 1代表蓝方
 uint8_t red_value[3]  = {0x22, 0x00, 0x00};
 // 蓝色数据
 uint8_t blue_value[3] = {0x00, 0x00, 0x22};
+// 空白数据（全为0）
+uint8_t rst_value[3] = {0x00, 0x00, 0x00};
 
 // 保存红色边框数据数组（rgb_num 125）
 uint16_t RGB_Blade_Red_buffur[RESET_PULSE + WS2812_DATA_LEN1] = { 0 };
@@ -47,7 +50,33 @@ void LC_Ws2812_Init(void)
 	array_set_rst();
 	// 初始化中间灯条数据
 	Middle_Array_Init();
+//	// 初始化灯条
+//	ws2812_lamp_strip_Init();
+}
 
+/**
+ * 	初始化灯条
+ * */
+void ws2812_lamp_strip_Init(void)
+{
+	ws2812_rst_send( &htim1, TIM_CHANNEL_1);
+	HAL_Delay(1);
+	ws2812_rst_send( &htim1, TIM_CHANNEL_2);
+	HAL_Delay(1);
+	ws2812_rst_send( &htim1, TIM_CHANNEL_3);
+	HAL_Delay(1);
+
+	ws2812_rst_send( &htim8, TIM_CHANNEL_2);
+	HAL_Delay(1);
+	ws2812_rst_send( &htim8, TIM_CHANNEL_3);
+	HAL_Delay(1);
+
+
+	GPIO_State_Open();
+	HAL_Delay(100);
+	ws2812_rst_send( &htim8, TIM_CHANNEL_4);
+	HAL_Delay(100);						// 需要一个延迟
+	GPIO_State_Init();					// 继电器初始化
 }
 
 /**
@@ -154,36 +183,37 @@ void Middle_Data_combination(uint16_t count)
 	{
 		if(RGB_Array1[i+/*+ 移位量*/count] == 1)
 		{
-			ws2812_Middle_Data_fill( Middle_RGB_1_5+i);
-			ws2812_Middle_Data_fill( Middle_RGB_5_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_1_5+i, 1);
+			ws2812_Middle_Data_fill( Middle_RGB_5_5+i, 1);
 		} else {
-			ws2812_Middle_Data_fill( Middle_RGB_1_5+i);
-			ws2812_Middle_Data_fill( Middle_RGB_5_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_1_5+i, 0);
+			ws2812_Middle_Data_fill( Middle_RGB_5_5+i, 0);
 		}
 
 		if(RGB_Array2[25-i-1+/*+ 移位量*/count] == 1)
 		{
-			ws2812_Middle_Data_fill( Middle_RGB_2_5+i);
-			ws2812_Middle_Data_fill( Middle_RGB_4_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_2_5+i, 1);
+			ws2812_Middle_Data_fill( Middle_RGB_4_5+i, 1);
 		} else {
-			ws2812_Middle_Data_fill( Middle_RGB_2_5+i);
-			ws2812_Middle_Data_fill( Middle_RGB_4_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_2_5+i, 0);
+			ws2812_Middle_Data_fill( Middle_RGB_4_5+i, 0);
 		}
 
 		if(RGB_Array3[i+/*+ 移位量*/count] == 1)
 		{
-			ws2812_Middle_Data_fill( Middle_RGB_3_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_3_5+i, 1);
 		} else {
-			ws2812_Middle_Data_fill( Middle_RGB_3_5+i);
+			ws2812_Middle_Data_fill( Middle_RGB_3_5+i, 0);
 		}
 	}
 }
 
 /**
  *	风车中间灯条数组填充
- *
+ *	num : 灯珠序号
+ *	state : 填入颜色或空白
  * */
-void ws2812_Middle_Data_fill( uint16_t num )
+void ws2812_Middle_Data_fill( uint16_t num , uint8_t state)
 {
 	uint16_t* p ;
 	uint8_t R ;
@@ -193,15 +223,31 @@ void ws2812_Middle_Data_fill( uint16_t num )
 	if( Globle_State == 0 )
 	{
 		p = (RGB_Middle_Red_buffur  + RESET_PULSE) + (num * LED_DATA_LEN);
-		R = red_value[0];
-		G = red_value[1];
-		B = red_value[2];
+		if( state == 1 )
+		{
+			R = red_value[0];
+			G = red_value[1];
+			B = red_value[2];
+		} else {
+			R = rst_value[0];
+			G = rst_value[1];
+			B = rst_value[2];
+		}
+
 	} else {
 		p = (RGB_Middle_Blue_buffur + RESET_PULSE) + (num * LED_DATA_LEN);
-		R = blue_value[0];
-		G = blue_value[1];
-		B = blue_value[2];
+		if( state == 1 )
+		{
+			R = blue_value[0];
+			G = blue_value[1];
+			B = blue_value[2];
+		} else {
+			R = rst_value[0];
+			G = rst_value[1];
+			B = rst_value[2];
+		}
 	}
+
 
 	for (uint16_t i = 0;i < 8;i++)
 	{
@@ -285,25 +331,48 @@ void array_set_rst(void)
  * */
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
 {
-	windwill_state = 1;
-	if ((htim->Instance == htim1.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)) {
+
+	if ((htim->Instance == htim1.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)) {
 		HAL_TIM_PWM_Stop_DMA(&htim1,TIM_CHANNEL_1);
 
-	} else if ((htim->Instance == htim1.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
+	} else if ((htim->Instance == htim1.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 		HAL_TIM_PWM_Stop_DMA(&htim1,TIM_CHANNEL_2);
 
-	} else if ((htim->Instance == htim1.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)) {
+	} else if ((htim->Instance == htim1.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)) {
 		HAL_TIM_PWM_Stop_DMA(&htim1,TIM_CHANNEL_3);
 
-	} else if ((htim->Instance == htim8.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
+	} else if ((htim->Instance == htim8.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)) {
 		HAL_TIM_PWM_Stop_DMA(&htim8,TIM_CHANNEL_2);
 
-	} else if ((htim->Instance == htim8.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)) {
+	} else if ((htim->Instance == htim8.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)) {
 		HAL_TIM_PWM_Stop_DMA(&htim8,TIM_CHANNEL_3);
-	} else if((htim->Instance == htim8.Instance) && (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)) {
+
+	} else if((htim->Instance == htim8.Instance)
+			&& (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)) {
 		HAL_TIM_PWM_Stop_DMA(&htim8,TIM_CHANNEL_4);
-		GPIO_State_Init();
 	}
 
 }
 
+/**
+ * 	打击完成后的响应函数
+ * 	Mission accomplished
+ * */
+void ws2812_Mission_Accomplished(void)
+{
+	GPIO_State_Open();				// 开启所有继电器
+	for( uint8_t i = 0; i < 5 ; i++ )
+	{
+		ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+		HAL_Delay(500);
+		ws2812_rst_send( &htim8, TIM_CHANNEL_4);
+		HAL_Delay(500);
+	}
+
+
+}

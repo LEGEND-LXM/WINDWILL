@@ -10,6 +10,7 @@
 
 extern int16_t shift_count;
 
+void LC_TimInterrupt_Init(void);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 

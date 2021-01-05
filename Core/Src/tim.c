@@ -277,7 +277,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     __HAL_RCC_TIM2_CLK_ENABLE();
 
     /* TIM2 interrupt Init */
-    HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(TIM2_IRQn);
   /* USER CODE BEGIN TIM2_MspInit 1 */
 
@@ -331,7 +331,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle)
     /* TIM8_CH4_TRIG_COM Init */
     hdma_tim8_ch4_trig_com.Instance = DMA2_Stream7;
     hdma_tim8_ch4_trig_com.Init.Channel = DMA_CHANNEL_7;
-    hdma_tim8_ch4_trig_com.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_tim8_ch4_trig_com.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_tim8_ch4_trig_com.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_tim8_ch4_trig_com.Init.MemInc = DMA_MINC_ENABLE;
     hdma_tim8_ch4_trig_com.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;

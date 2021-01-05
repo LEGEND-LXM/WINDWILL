@@ -32,6 +32,8 @@ extern uint8_t Globle_State ;	// 0 代表红方； 1代表蓝方
 // 红色数据
 extern uint8_t red_value[3] ;
 // 蓝色数据
+// 空白数据（全为0）
+extern uint8_t rst_value[3] ;
 extern uint8_t blue_value[3] ;
 // 保存红色边框数据数组（rgb_num 125）
 extern uint16_t RGB_Blade_Red_buffur[RESET_PULSE + WS2812_DATA_LEN1] ;
@@ -62,11 +64,14 @@ void ws2812_set_RGB_rst_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num);
 //  给数组添加数据
 void Middle_Array_Init(void);
 
+// 初始化灯条
+void ws2812_lamp_strip_Init(void);
+
 // 中间灯条数据组合
 void Middle_Data_combination(uint16_t count);
 
 // 风车中间灯条数组填充
-void ws2812_Middle_Data_fill( uint16_t num );
+void ws2812_Middle_Data_fill( uint16_t num , uint8_t state);
 
 // state ：选择阵容 （0 ：红方；1 ：蓝方）
 void ws2812_frame_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state);
@@ -87,5 +92,7 @@ void array_set_rst(void);
 // PWM DMA中断传输结束回调函数
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim);
 
+// 打击完成后的响应函数
+void ws2812_Mission_Accomplished(void);
 
 #endif /* INCLUDE_LC_WS2812_H_ */

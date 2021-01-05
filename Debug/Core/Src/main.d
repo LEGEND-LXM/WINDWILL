@@ -33,6 +33,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  E:/STM32/2020/WINDWILL/Mycode/include/lc_ws2812.h \
  E:/STM32/2020/WINDWILL/Mycode/include/lc_exit_nvic.h \
  E:/STM32/2020/WINDWILL/Mycode/include/lc_pwm.h \
+ E:/STM32/2020/WINDWILL/Mycode/include/lc_tim_nvic.h \
  E:/STM32/2020/WINDWILL/lc_rm/include/pid.h \
  E:/STM32/2020/WINDWILL/lc_rm/include/bsp_can.h \
  E:/STM32/2020/WINDWILL/lc_rm/include/bsp_usart.h \
@@ -115,6 +116,8 @@ E:/STM32/2020/WINDWILL/Mycode/include/lc_ws2812.h:
 E:/STM32/2020/WINDWILL/Mycode/include/lc_exit_nvic.h:
 
 E:/STM32/2020/WINDWILL/Mycode/include/lc_pwm.h:
+
+E:/STM32/2020/WINDWILL/Mycode/include/lc_tim_nvic.h:
 
 E:/STM32/2020/WINDWILL/lc_rm/include/pid.h:
 

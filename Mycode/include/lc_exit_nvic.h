@@ -11,5 +11,6 @@
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void GPIO_State_Init(void);
 void GPIO_State_Open(void);
+void GPIO_Single_line(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);	// 继电器单开函数
 
 #endif /* INCLUDE_LC_EXIT_NVIC_H_ */

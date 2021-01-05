@@ -34,6 +34,63 @@ void GPIO_State_Open(void)
 	HAL_GPIO_WritePin(GPIOA, Windwill_Middle_None_Pin, GPIO_PIN_SET);
 }
 
+/**
+ * 	继电器单开函数
+ * */
+void GPIO_Single_line(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
+{
+	if( GPIOx ==  GPIOC )
+	{
+		switch( GPIO_Pin )
+		{
+			case Windwill_Middle_1_Pin :
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOA, Windwill_Middle_5_Pin, GPIO_PIN_RESET);
+				break;
+
+			case Windwill_Middle_2_Pin :
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOA, Windwill_Middle_5_Pin, GPIO_PIN_RESET);
+				break;
+
+			case Windwill_Middle_3_Pin :
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOA, Windwill_Middle_5_Pin, GPIO_PIN_RESET);
+				break;
+
+			case Windwill_Middle_4_Pin :
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_SET);
+				HAL_GPIO_WritePin(GPIOA, Windwill_Middle_5_Pin, GPIO_PIN_RESET);
+				break;
+		}
+	}
+	if( GPIOx ==  GPIOA && GPIO_Pin == Windwill_Middle_5_Pin )
+	{
+		HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, Windwill_Middle_5_Pin, GPIO_PIN_SET);
+	}
+
+}
+
+/**
+ * 	外部中断回调函数
+ * 	GPIO_Pin ：中断线
+ * */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 
@@ -43,22 +100,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			if( windwill_num == 1 )
 			{
-				windwill_num = 2;
+
 				windwill_state = 1;
-				ws2812_frame_send(&htim1, TIM_CHANNEL_1, Globle_State);
-				//1. 中间灯条常亮
-				GPIO_State_Init();
-				HAL_GPIO_WritePin(GPIOC, Windwill_Middle_1_Pin, GPIO_PIN_SET);
-				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);	// 填充单色
-			}
-			else {
-				windwill_num = 1;
-				//2. 所有灯条初始化
-				GPIO_State_Open();
-				ws2812_rst_send(&htim8, TIM_CHANNEL_4);
+				ws2812_frame_send(&htim1, TIM_CHANNEL_1, Globle_State);		// 填充边框灯条
+//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
+				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+				windwill_num = 2;
+				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
 
-			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
 			break;
 
@@ -66,20 +116,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			if( windwill_num == 2 )
 			{
-					windwill_state = 1;
-					windwill_num = 3;
-					ws2812_frame_send(&htim1, TIM_CHANNEL_2, Globle_State);
-					//1. 中间灯条常亮
-					GPIO_State_Init();
-					HAL_GPIO_WritePin(GPIOC, Windwill_Middle_2_Pin, GPIO_PIN_SET);
-					ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);	// 填充单色
-					HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-			}
-			else {
-				windwill_num = 1;
-				//2. 所有灯条初始化
-				GPIO_State_Open();
-				ws2812_rst_send(&htim8, TIM_CHANNEL_4);
+
+				windwill_state = 1;
+				ws2812_frame_send(&htim1, TIM_CHANNEL_2, Globle_State);		// 填充边框灯条
+//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
+				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+				windwill_num = 3;
+				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
 
 
@@ -90,22 +133,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			if( windwill_num == 3 )
 			{
-					windwill_state = 1;
-					windwill_num = 4;
-					ws2812_frame_send(&htim1, TIM_CHANNEL_3, Globle_State);
-					//1. 中间灯条常亮
-					GPIO_State_Init();
-					HAL_GPIO_WritePin(GPIOC, Windwill_Middle_3_Pin, GPIO_PIN_SET);
-					ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);	// 填充单色
-			}
-			else {
-				windwill_num = 1;
-				//2. 所有灯条初始化
-				GPIO_State_Open();
-				ws2812_rst_send(&htim8, TIM_CHANNEL_4);
+
+				windwill_state = 1;
+				ws2812_frame_send(&htim1, TIM_CHANNEL_3, Globle_State);		// 填充边框灯条
+//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
+				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+				windwill_num = 4;
+				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
 
-			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
 			break;
 
@@ -113,22 +149,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			if( windwill_num == 4 )
 			{
-					windwill_state = 1;
-					windwill_num = 5;
-					ws2812_frame_send(&htim8, TIM_CHANNEL_2, Globle_State);
-					//1. 中间灯条常亮
-					GPIO_State_Init();
-					HAL_GPIO_WritePin(GPIOC, Windwill_Middle_4_Pin, GPIO_PIN_SET);
-					ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);	// 填充单色
-			}
-			else {
-				windwill_num = 1;
-				//2. 所有灯条初始化
-				GPIO_State_Open();
-				ws2812_rst_send(&htim8, TIM_CHANNEL_4);
+
+				windwill_state = 1;
+				ws2812_frame_send(&htim8, TIM_CHANNEL_2, Globle_State);		// 填充边框灯条
+				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+
+				windwill_num = 5;
+				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
 
-			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
 			break;
 
@@ -136,23 +165,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		{
 			if( windwill_num == 5 )
 			{
-					windwill_state = 1;
-					ws2812_frame_send(&htim8, TIM_CHANNEL_3, Globle_State);
-					windwill_strike_completed = 1;
-					//1. 中间灯条常亮
-					GPIO_State_Init();
-					HAL_GPIO_WritePin(GPIOC, Windwill_Middle_5_Pin, GPIO_PIN_SET);
-					ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);	// 填充单色
-			}
-			else {
-				windwill_num = 1;
-				//2. 所有灯条初始化
-				GPIO_State_Open();
-				ws2812_rst_send(&htim8, TIM_CHANNEL_4);
-			}
 
-			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+				windwill_state = 1;
+				ws2812_frame_send(&htim8, TIM_CHANNEL_3, Globle_State);		// 填充边框灯条
+//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
+				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+				windwill_strike_completed = 1;
+				windwill_num = 1;
+				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+			}
 		}
+			break;
+
+		case Lineup_Switch_Pin:
+
+			windwill_state = 0;				// 初始化打击状�?
+			Globle_State = !Globle_State;
+			ws2812_lamp_strip_Init();			// 初始化灯�?
+			GPIO_State_Init();
+			windwill_strike_completed = 0;	// 清除打击完成标志�?
+			windwill_num = 1;					// 装甲板标号归0
 			break;
 	}
 
