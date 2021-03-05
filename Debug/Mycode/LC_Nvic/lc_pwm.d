@@ -29,7 +29,7 @@ Mycode/LC_Nvic/lc_pwm.o: ../Mycode/LC_Nvic/lc_pwm.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/tim.h ../Core/Inc/main.h \
- E:/STM32/2020/WINDWILL/Mycode/include/lc_pwm.h
+ C:/GitHub/WINDWILL/Mycode/include/lc_pwm.h
 
 ../Core/Inc/main.h:
 
@@ -95,4 +95,4 @@ Mycode/LC_Nvic/lc_pwm.o: ../Mycode/LC_Nvic/lc_pwm.c ../Core/Inc/main.h \
 
 ../Core/Inc/main.h:
 
-E:/STM32/2020/WINDWILL/Mycode/include/lc_pwm.h:
+C:/GitHub/WINDWILL/Mycode/include/lc_pwm.h:

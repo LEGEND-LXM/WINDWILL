@@ -1,7 +1,6 @@
 lc_rm/source/robomaster_vcan.o: ../lc_rm/source/robomaster_vcan.c \
- E:/STM32/2020/WINDWILL/lc_rm/include/robomaster_vcan.h \
- ../Core/Inc/usart.h ../Core/Inc/main.h \
- ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
+ C:/GitHub/WINDWILL/lc_rm/include/robomaster_vcan.h ../Core/Inc/usart.h \
+ ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h \
@@ -31,7 +30,7 @@ lc_rm/source/robomaster_vcan.o: ../lc_rm/source/robomaster_vcan.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 
-E:/STM32/2020/WINDWILL/lc_rm/include/robomaster_vcan.h:
+C:/GitHub/WINDWILL/lc_rm/include/robomaster_vcan.h:
 
 ../Core/Inc/usart.h:
 

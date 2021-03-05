@@ -1,5 +1,5 @@
 lc_rm/source/pid.o: ../lc_rm/source/pid.c \
- E:/STM32/2020/WINDWILL/lc_rm/include/pid.h \
+ C:/GitHub/WINDWILL/lc_rm/include/pid.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -30,7 +30,7 @@ lc_rm/source/pid.o: ../lc_rm/source/pid.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 
-E:/STM32/2020/WINDWILL/lc_rm/include/pid.h:
+C:/GitHub/WINDWILL/lc_rm/include/pid.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 

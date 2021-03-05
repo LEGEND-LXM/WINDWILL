@@ -37,27 +37,37 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					GPIO_Single_line(GPIOC, Windwill_Middle_1_Pin);
 					// 1.2 启用PWM发送
 					ws2812_middle_send(&htim8, TIM_CHANNEL_4, Globle_State);
+					// 1.3 风车上部分封闭矩形亮起
+					ws2812_Wait_Hit_frame_send(&htim1, TIM_CHANNEL_1, Globle_State);	// 下一片扇叶进入带打击状态
+
 					break;
 
 				case 2:		// 扇叶2中间流水
-//					ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
 					GPIO_Single_line(GPIOC, Windwill_Middle_2_Pin);
 					ws2812_middle_send(&htim8, TIM_CHANNEL_4, Globle_State);
+
+					ws2812_Wait_Hit_frame_send(&htim1, TIM_CHANNEL_2, Globle_State);	// 下一片扇叶进入带打击状态
 					break;
 
 				case 3:		// 扇叶3中间流水
 					GPIO_Single_line(GPIOC, Windwill_Middle_3_Pin);
 					ws2812_middle_send(&htim8, TIM_CHANNEL_4, Globle_State);
+
+					ws2812_Wait_Hit_frame_send(&htim1, TIM_CHANNEL_3, Globle_State);	// 下一片扇叶进入带打击状态
 					break;
 
 				case 4:		// 扇叶4中间流水
 					GPIO_Single_line(GPIOC, Windwill_Middle_4_Pin);
 					ws2812_middle_send(&htim8, TIM_CHANNEL_4, Globle_State);
+
+					ws2812_Wait_Hit_frame_send(&htim8, TIM_CHANNEL_2, Globle_State);	// 下一片扇叶进入带打击状态
 					break;
 
 				case 5:		// 扇叶5中间流水
 					GPIO_Single_line(GPIOA, Windwill_Middle_5_Pin);
 					ws2812_middle_send(&htim8, TIM_CHANNEL_4, Globle_State);
+
+					ws2812_Wait_Hit_frame_send(&htim8, TIM_CHANNEL_3, Globle_State);	// 下一片扇叶进入带打击状态
 					break;
 			}
 		}

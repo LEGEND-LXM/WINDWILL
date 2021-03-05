@@ -50,6 +50,10 @@ extern uint16_t RGB_Middle_Red_buffur[RESET_PULSE + WS2812_DATA_LEN2] ;
 // 保存即将需要发送的中间数组的数据(blue)（上述三个的组合 25+25+25 ）
 extern uint16_t RGB_Middle_Blue_buffur[RESET_PULSE + WS2812_DATA_LEN2] ;
 
+// 边框待打击数据数组
+extern uint16_t RGB_Red_Wait_Hit_buffur[RESET_PULSE + WS2812_DATA_LEN1] ;
+extern uint16_t RGB_Bule_Wait_Hit_buffur[RESET_PULSE + WS2812_DATA_LEN1] ;
+
 
 
 // WS2812 初始化
@@ -61,8 +65,14 @@ void ws2812_set_RGB_data_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num, uin
 // 将复位数据转换为占空比数据保存进数组中
 void ws2812_set_RGB_rst_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num);
 
+//* 填充第 num 个灯的数据	 ********
+void ws2812_Set_Wait_Hit_RGB_data_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num, uint8_t state);
+
 //  给数组添加数据
 void Middle_Array_Init(void);
+
+// * 	给数组填充数据	*********
+void array_wait_hit_set_init(uint8_t num_start, uint8_t num_end);
 
 // 初始化灯条
 void ws2812_lamp_strip_Init(void);
@@ -79,8 +89,12 @@ void ws2812_frame_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state)
 // 发送中间灯条边框数据
 void ws2812_middle_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state);
 
+//* 发送待打击边框 	********
+void ws2812_Wait_Hit_frame_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state);
+
 // 发送复位信号
 void ws2812_rst_send(TIM_HandleTypeDef *htim, uint32_t Channel);
+
 
 // 添加大风车边框颜色数据
 // 红蓝 数据同时初始化

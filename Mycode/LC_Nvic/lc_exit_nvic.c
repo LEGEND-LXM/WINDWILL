@@ -105,6 +105,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				ws2812_frame_send(&htim1, TIM_CHANNEL_1, Globle_State);		// 填充边框灯条
 //				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
 				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+//				ws2812_Wait_Hit_frame_send(&htim1, TIM_CHANNEL_2, Globle_State);	// 下一片扇叶进入带打击状态
 				windwill_num = 2;
 				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
@@ -121,6 +122,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				ws2812_frame_send(&htim1, TIM_CHANNEL_2, Globle_State);		// 填充边框灯条
 //				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
 				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
+//				ws2812_Wait_Hit_frame_send(&htim1, TIM_CHANNEL_3, Globle_State);	// 下一片扇叶进入带打击状态
 				windwill_num = 3;
 				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
@@ -153,7 +155,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 				windwill_state = 1;
 				ws2812_frame_send(&htim8, TIM_CHANNEL_2, Globle_State);		// 填充边框灯条
 				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
-
+//				ws2812_Wait_Hit_frame_send(&htim8, TIM_CHANNEL_3, Globle_State);	// 下一片扇叶进入带打击状态
 				windwill_num = 5;
 				HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 			}
@@ -168,7 +170,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 				windwill_state = 1;
 				ws2812_frame_send(&htim8, TIM_CHANNEL_3, Globle_State);		// 填充边框灯条
-//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//***
+//				ws2812_rst_send( &htim8, TIM_CHANNEL_4);//**
 				ws2812_frame_send(&htim8, TIM_CHANNEL_4, Globle_State);		// 填充中间灯条
 				windwill_strike_completed = 1;
 				windwill_num = 1;

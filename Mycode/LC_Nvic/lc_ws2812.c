@@ -24,6 +24,11 @@ uint8_t rst_value[3] = {0x00, 0x00, 0x00};
 // 保存红色边框数据数组（rgb_num 125）
 uint16_t RGB_Blade_Red_buffur[RESET_PULSE + WS2812_DATA_LEN1] = { 0 };
 
+// 保存待打击状态边框数据数组（rgb_num 125）
+uint16_t RGB_Red_Wait_Hit_buffur[RESET_PULSE + WS2812_DATA_LEN1] = {0};
+
+// 保存待打击状态边框数据数组（rgb_num 125）
+uint16_t RGB_Bule_Wait_Hit_buffur[RESET_PULSE + WS2812_DATA_LEN1] = {0};
 // 保存蓝色边框数据数组（rgb_num 125）
 uint16_t RGB_Blade_Blue_buffur[RESET_PULSE + WS2812_DATA_LEN1] = { 0 };
 
@@ -50,8 +55,10 @@ void LC_Ws2812_Init(void)
 	array_set_rst();
 	// 初始化中间灯条数据
 	Middle_Array_Init();
-//	// 初始化灯条
-//	ws2812_lamp_strip_Init();
+	// * 初始化待打击状态数组数据 *****
+	array_wait_hit_set_init(27, 64);
+	// 初始化灯条
+
 }
 
 /**
@@ -77,6 +84,7 @@ void ws2812_lamp_strip_Init(void)
 	ws2812_rst_send( &htim8, TIM_CHANNEL_4);
 	HAL_Delay(100);						// 需要一个延迟
 	GPIO_State_Init();					// 继电器初始化
+
 }
 
 /**
@@ -91,6 +99,30 @@ void ws2812_set_RGB_data_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num, uin
 		p = (RGB_Blade_Red_buffur  + RESET_PULSE) + (num * LED_DATA_LEN);
 	else
 		p = (RGB_Blade_Blue_buffur + RESET_PULSE) + (num * LED_DATA_LEN);
+
+	for (uint16_t i = 0;i < 8;i++)
+	{
+		//填充数组
+		p[i]      = (G << i) & (0x80)?ONE_PULSE:ZERO_PULSE;
+		p[i + 8]  = (R << i) & (0x80)?ONE_PULSE:ZERO_PULSE;
+		p[i + 16] = (B << i) & (0x80)?ONE_PULSE:ZERO_PULSE;
+	}
+}
+
+/*
+ * 	将第 num 个灯的数据填充到数组中
+ * 	R\G\B 为颜色数据
+ * 	num 为灯的编号
+ * 	state 选择比赛方（0 ：红方；1 ：蓝方）
+ * **/
+void ws2812_Set_Wait_Hit_RGB_data_Init(uint8_t R, uint8_t G, uint8_t B, uint16_t num, uint8_t state)
+{
+    //指针偏移:需要跳过复位信号的N个0
+	uint16_t* p;
+	if( state == 0 )
+		p = (RGB_Red_Wait_Hit_buffur  + RESET_PULSE) + (num * LED_DATA_LEN);
+	else
+		p = (RGB_Bule_Wait_Hit_buffur + RESET_PULSE) + (num * LED_DATA_LEN);
 
 	for (uint16_t i = 0;i < 8;i++)
 	{
@@ -134,15 +166,15 @@ void Middle_Array_Init(void)
 		switch(j)
 		{
 		case 0:
-			RGB_Array1[i] = 0;
-			RGB_Array2[i] = 1;
-			RGB_Array3[i] = 1;
+			RGB_Array1[i] = 1;
+			RGB_Array2[i] = 0;
+			RGB_Array3[i] = 0;
 			break;
 
 		case 1:
-			RGB_Array1[i] = 0;
+			RGB_Array1[i] = 1;
 			RGB_Array2[i] = 1;
-			RGB_Array3[i] = 1;
+			RGB_Array3[i] = 0;
 			break;
 
 		case 2:
@@ -287,6 +319,20 @@ void ws2812_middle_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state
 }
 
 /**
+ * 	发送边框数据
+ * 	state ：选择阵容 （0 ：红方；1 ：蓝方）
+ * */
+void ws2812_Wait_Hit_frame_send(TIM_HandleTypeDef *htim, uint32_t Channel, uint8_t state)
+{
+	if( state == 0 )
+		HAL_TIM_PWM_Start_DMA(htim, Channel,
+				(uint32_t *)RGB_Red_Wait_Hit_buffur, (RESET_PULSE + WS2812_DATA_LEN1));
+	else
+		HAL_TIM_PWM_Start_DMA(htim, Channel,
+				(uint32_t *)RGB_Bule_Wait_Hit_buffur, (RESET_PULSE + WS2812_DATA_LEN1));
+}
+
+/**
  * 	发送复位信号
  * */
 void ws2812_rst_send(TIM_HandleTypeDef *htim, uint32_t Channel)
@@ -296,9 +342,9 @@ void ws2812_rst_send(TIM_HandleTypeDef *htim, uint32_t Channel)
 }
 
 /**
-   *   添加大风车边框颜色数据
-   *   红蓝 数据同时初始化
- *
+ *	添加大风车边框颜色数据
+ * 	红蓝 数据同时初始化
+ *	（填充数据）
  * */
 void array_set_init(void)
 {
@@ -323,6 +369,30 @@ void array_set_rst(void)
 	for( i = 0; i < LED_NUM1; i++)
 	{
 		ws2812_set_RGB_rst_Init(0x00, 0x00, 0x00, i);
+	}
+}
+
+/**
+ *	填充准备过程的数据
+ *	num_start : 开始的点
+ *	num_end ：结束的点
+ * */
+void array_wait_hit_set_init(uint8_t num_start, uint8_t num_end)
+{
+	uint8_t i = 0;
+
+	for( i = 0; i < LED_NUM1; i++)
+	{
+		if( i < num_start || i > num_end )
+		{
+			ws2812_Set_Wait_Hit_RGB_data_Init(rst_value[0] , rst_value[1] , rst_value[2] , i, 0);
+			ws2812_Set_Wait_Hit_RGB_data_Init(rst_value[0], rst_value[1], rst_value[2], i, 1);
+
+		}else {
+
+			ws2812_Set_Wait_Hit_RGB_data_Init(red_value[0] , red_value[1] , red_value[2] , i, 0);
+			ws2812_Set_Wait_Hit_RGB_data_Init(blue_value[0], blue_value[1], blue_value[2], i, 1);
+		}
 	}
 }
 

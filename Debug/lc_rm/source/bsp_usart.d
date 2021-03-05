@@ -1,5 +1,5 @@
 lc_rm/source/bsp_usart.o: ../lc_rm/source/bsp_usart.c \
- E:/STM32/2020/WINDWILL/lc_rm/include/bsp_usart.h ../Core/Inc/main.h \
+ C:/GitHub/WINDWILL/lc_rm/include/bsp_usart.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -31,7 +31,7 @@ lc_rm/source/bsp_usart.o: ../lc_rm/source/bsp_usart.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/usart.h ../Core/Inc/main.h
 
-E:/STM32/2020/WINDWILL/lc_rm/include/bsp_usart.h:
+C:/GitHub/WINDWILL/lc_rm/include/bsp_usart.h:
 
 ../Core/Inc/main.h:
 

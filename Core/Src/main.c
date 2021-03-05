@@ -52,7 +52,7 @@
 /* USER CODE BEGIN PM */
   // 待打击装甲板编号
   uint8_t windwill_num = 1;
-  // 打击状�?�判定（0为待打击�???1为打击完毕）
+  // 打击状�?�判定（0为待打击�???1为打击完毕）
   uint8_t windwill_state = 0;
   // 打击完成标志
   uint8_t windwill_strike_completed = 0;
@@ -120,21 +120,21 @@ int main(void)
 //  GPIO_State_Init();					// 继电器初始化
 
 
-  LC_Ws2812_Init();						// RGB相关初始�??
+  LC_Ws2812_Init();						// RGB相关初始�??
 
-  ws2812_lamp_strip_Init();				// 灯条初始�?
+  ws2812_lamp_strip_Init();				// 灯条初始�?
 
   LC_TimInterrupt_Init();				// 定时器中断初始化
 
-  ws2812_lamp_strip_Init();				// 灯条初始�?
+  ws2812_lamp_strip_Init();				// 灯条初始�?
 
-  can_user_init(&hcan1);             	// CAN用户初始�??????
+  can_user_init(&hcan1);             	// CAN用户初始�??????
 
-  pid_init(&windwill_motor_PID, DELTA_PID      //1号电�??????
+  pid_init(&windwill_motor_PID, DELTA_PID      //1号电�??????
 								,10            		 //Kp
 								,0            		 //Ki
 								,0            		 //Kd
-								,0 ,1300 ,0); //初始化底盘电机PID结构�??????
+								,0 ,1300 ,0); //初始化底盘电机PID结构�??????
 
 
   /* USER CODE END 2 */
@@ -155,20 +155,20 @@ int main(void)
 
 	  if( windwill_state == 1 )	// 如果已经打击
 	  {
-		  windwill_state = 0;	// 清除打击标志�???
+		  windwill_state = 0;	// 清除打击标志�???
 		  HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
 	  }
 
 	  // 打击完成
-	  // 进行初始�?
+	  // 进行初始�?
 	  if( windwill_strike_completed == 1 )
 	  {
 		  ws2812_Mission_Accomplished();	// 打击完成响应
-		  windwill_state = 0;				// 初始化打击状�?
+		  windwill_state = 0;				// 初始化打击状�?
 
-		  ws2812_lamp_strip_Init();			// 初始化灯�?
+		  ws2812_lamp_strip_Init();			// 初始化灯�?
 		  GPIO_State_Init();
-		  windwill_strike_completed = 0;	// 清除打击完成标志�?
+		  windwill_strike_completed = 0;	// 清除打击完成标志�?
 		  windwill_num = 1;					// 装甲板标号归0
 	  }
 

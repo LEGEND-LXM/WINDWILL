@@ -1,5 +1,6 @@
 ################################################################################
 # 自动生成的文件。不要编辑！
+# Toolchain: GNU Tools for STM32 (9-2020-q2-update)
 ################################################################################
 
 -include ../makefile.init
@@ -30,6 +31,17 @@ endif
 
 -include ../makefile.defs
 
+OPTIONAL_TOOL_DEPS := \
+$(wildcard ../makefile.defs) \
+$(wildcard ../makefile.init) \
+$(wildcard ../makefile.targets) \
+
+
+BUILD_ARTIFACT_NAME := WINDWILL
+BUILD_ARTIFACT_EXTENSION := elf
+BUILD_ARTIFACT_PREFIX := 
+BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
+
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
 WINDWILL.elf \
@@ -45,25 +57,28 @@ WINDWILL.bin \
 
 
 # 所有目标
-all: WINDWILL.elf secondary-outputs
+all: main-build
+
+# 主构建目标
+main-build: WINDWILL.elf secondary-outputs
 
 # 工具调用
-WINDWILL.elf: $(OBJS) $(USER_OBJS) E:\STM32\2020\WINDWILL\STM32F427IIHX_FLASH.ld
-	arm-none-eabi-gcc -o "WINDWILL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\STM32\2020\WINDWILL\STM32F427IIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WINDWILL.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+WINDWILL.elf: $(OBJS) $(USER_OBJS) C:\GitHub\WINDWILL\STM32F427IIHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "WINDWILL.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\GitHub\WINDWILL\STM32F427IIHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WINDWILL.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo '已结束构建目标： $@'
 	@echo ' '
 
-default.size.stdout: $(EXECUTABLES)
+default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-size  $(EXECUTABLES)
 	@echo '已结束构建： $@'
 	@echo ' '
 
-WINDWILL.list: $(EXECUTABLES)
+WINDWILL.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "WINDWILL.list"
 	@echo '已结束构建： $@'
 	@echo ' '
 
-WINDWILL.bin: $(EXECUTABLES)
+WINDWILL.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "WINDWILL.bin"
 	@echo '已结束构建： $@'
 	@echo ' '
@@ -75,7 +90,14 @@ clean:
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
-.PHONY: all clean dependents
+fail-specified-linker-script-missing:
+	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
+	@exit 2
+
+warn-no-linker-script-specified:
+	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
+
+.PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
 .SECONDARY:
 
 -include ../makefile.targets

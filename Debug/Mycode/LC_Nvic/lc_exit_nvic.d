@@ -29,8 +29,8 @@ Mycode/LC_Nvic/lc_exit_nvic.o: ../Mycode/LC_Nvic/lc_exit_nvic.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/tim.h ../Core/Inc/main.h \
- E:/STM32/2020/WINDWILL/Mycode/include/lc_exit_nvic.h \
- E:/STM32/2020/WINDWILL/Mycode/include/lc_ws2812.h
+ C:/GitHub/WINDWILL/Mycode/include/lc_exit_nvic.h \
+ C:/GitHub/WINDWILL/Mycode/include/lc_ws2812.h
 
 ../Core/Inc/main.h:
 
@@ -96,6 +96,6 @@ Mycode/LC_Nvic/lc_exit_nvic.o: ../Mycode/LC_Nvic/lc_exit_nvic.c \
 
 ../Core/Inc/main.h:
 
-E:/STM32/2020/WINDWILL/Mycode/include/lc_exit_nvic.h:
+C:/GitHub/WINDWILL/Mycode/include/lc_exit_nvic.h:
 
-E:/STM32/2020/WINDWILL/Mycode/include/lc_ws2812.h:
+C:/GitHub/WINDWILL/Mycode/include/lc_ws2812.h:
